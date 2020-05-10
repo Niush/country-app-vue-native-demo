@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "countryApp",
-    "slug": "countryApp",
+    "name": "Country Details",
+    "slug": "country-details",
     "platforms": [
       "ios",
       "android",
@@ -23,6 +23,16 @@
     ],
     "ios": {
       "supportsTablet": true
+    },
+    "packagerOpts": {
+      "config": "metro.config.js",
+      "sourceExts": [
+        "js",
+        "json",
+        "ts",
+        "tsx",
+        "vue"
+      ]
     }
   }
 }
