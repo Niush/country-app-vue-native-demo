@@ -112,6 +112,7 @@
 
       loadCountryDetails: async function() {
         if(this.query.slice().trim().length <= 0){
+          this.simpleAlert('Search for Country', 'By Name and view details')
           return false;
         }
 
@@ -119,6 +120,7 @@
         this.searched = false;
         this.error = '';
         this.searchingFor = this.query.slice();
+        this.result = [];
 
         try {
             // Search in Cache "query:search"
