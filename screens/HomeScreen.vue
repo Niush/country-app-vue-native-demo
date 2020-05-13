@@ -24,12 +24,17 @@
     </view>
 
     <view 
-        v-if="searching && !searched"
+        v-if="searching && !refreshing && !searched"
         :style="{flex: 1, justifyContent: 'center'}">
         <activity-indicator size="large" color="#0000ff" />
     </view>
 
-    <scroll-view :style="{marginTop: 10}">
+    <scroll-view :style="{marginTop: 10, flex: 1, overflow: 'hidden'}"
+      :refreshControl="refreshControl()"
+    >
+      <!-- <view render-prop-fn="refreshControl" >
+        <refresh-control :refreshing="this.refreshing" :onRefresh="this.refresh" />
+      </view> -->
       <!-- If Results Found, Loop and show -->
       <view v-if="searched && result.length > 0">
         <touchable-opacity class="row-container" v-on:press="countryDetail(item)" :style="listItem" v-for="item in result" :key="item['alpha2Code']">
@@ -53,9 +58,10 @@
 
 <script>
   import React from 'react';
-  import {Dimensions, Alert, AsyncStorage} from "react-native";
+  import {Dimensions, Alert, AsyncStorage, RefreshControl} from "react-native";
 
   export default {
+    components: {RefreshControl},
     props: {
         navigation: {
             type: Object
@@ -69,6 +75,7 @@
         searchingFor: "",
         searched: false,
         result: [],
+        refreshing: false,
         inputStyle: {
           borderColor: 'gray',
           borderWidth: 1,
@@ -124,16 +131,18 @@
 
         try {
             // Search in Cache "query:search"
-            const value = await AsyncStorage.getItem(this.searchingFor+':search');
+            // const value = await AsyncStorage.getItem(this.searchingFor+':search');
+            const value = null;
             // If value exists in cache return it
             if (value !== null) {
                 this.result = JSON.parse(value);
                 this.searched = true;
+                return true;
             }
             // Else fetch from rest api
             else{
                 try {
-                    fetch('https://restcountries.eu/rest/v2/name/'+this.searchingFor)
+                    let success = await fetch('https://restcountries.eu/rest/v2/name/'+this.searchingFor)
                         .then((res) => { // Gets response & returns json()
                             if(res.status >= 200 && res.status < 300) {
                                 return res.json()
@@ -150,6 +159,7 @@
                             this.result = json;
                             this.searched = true;
                             await AsyncStorage.setItem((this.searchingFor+':search'), JSON.stringify(json));
+                            return true;
                         })
                         .catch((err) => {
                             if(err.message){
@@ -158,20 +168,41 @@
                                 this.simpleAlert('Failed to Fetch Detail', 'Something went wrong')
                             }
                             this.searched = true;
+                            return false;
                         })
+                    
+                    return success;
                 } catch (err) {
                     this.simpleAlert('Failed to Fetch Detail', 'Something went wrong')
                     this.searched = true;
+                    return false;
                 }
             }
         } catch (error) {
             console.log(error)
             console.log('Failing to fetch cache :search data with error')
+            return false;
         }
       },
 
       countryDetail: function(item){
         this.navigation.navigate("Country", {"data": item});
+      },
+
+      refreshControl: function(){
+        return (
+          <RefreshControl refreshing={this.refreshing} onRefresh={this.refresh}/>
+        )
+      },
+
+      refresh: async function(){
+        this.refreshing = true;
+        try{
+          await this.loadCountryDetails()
+          this.refreshing = false
+        }catch{
+          this.refreshing = false
+        }
       }
     }
   }

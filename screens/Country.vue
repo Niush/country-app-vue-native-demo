@@ -2,7 +2,9 @@
   <view class="container">
     <scroll-view v-if="data">
         <view :style="{flex:1, justifyContent: 'center', alignItems: 'center'}">
-            <svg-uri :width="'100'" :height="'100'" :uri="data.flag"></svg-uri>
+            <view :style="{width: 100, height: 100}">
+              <svg-uri :width="'100'" :height="'100'" :uri="data.flag"></svg-uri>
+            </view>
             <text :style="{fontSize: 25, fontWeight: 'bold', marginTop: 5}">{{data.name}}</text>
             <text>Capital: {{data.capital}}</text>
             <text>Region: {{data.region}}</text>
