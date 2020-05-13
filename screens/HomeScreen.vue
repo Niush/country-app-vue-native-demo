@@ -131,8 +131,7 @@
 
         try {
             // Search in Cache "query:search"
-            // const value = await AsyncStorage.getItem(this.searchingFor+':search');
-            const value = null;
+            const value = await AsyncStorage.getItem(this.searchingFor+':search');
             // If value exists in cache return it
             if (value !== null) {
                 this.result = JSON.parse(value);
