@@ -29,11 +29,34 @@
         <activity-indicator size="large" color="#0000ff" />
     </view>
 
+    <!-- <flat-list
+      :style="{backgroundColor: '#eeeeee55', height: 200, width: '100%', flex: 1, overflow: 'hidden'}"
+      :data="result" :keyExtractor="item => item.alpha2Code" :refreshing="refreshing" :onRefresh="refresh"
+      :onEndReached="info => console.log(info)">
+      <view render-prop-fn="renderItem">
+        <touchable-opacity v-on:press="countryDetail(args.item)" :style="listItem">
+          <text>{{args.item.name}}</text>
+        </touchable-opacity>
+      </view>
+      
+      <view render-prop="ListEmptyComponent">
+        <text :style="listItem">Nothing to show</text>
+      </view>
+      <view render-prop="ListHeaderComponent">
+        <text>Lists</text>
+      </view>
+    </flat-list> -->
+
+    <!-- If using this item seperator above inside flat list fails but listheader is working-->
+    <!-- <view render-prop="ItemSeparatorComponent">
+      <text>-</text>
+    </view> -->
+
     <scroll-view :style="{marginTop: 10, flex: 1, overflow: 'hidden'}"
       :refreshControl="refreshControl()"
     >
       <!-- <view render-prop-fn="refreshControl" >
-        <refresh-control :refreshing="this.refreshing" :onRefresh="this.refresh" />
+        <refresh-control :refreshing="this.refreshing" :onRefresh="this.refresh">
       </view> -->
       <!-- If Results Found, Loop and show -->
       <view v-if="searched && result.length > 0">
